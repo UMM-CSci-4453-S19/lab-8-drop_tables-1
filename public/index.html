@@ -14,10 +14,16 @@
        <div ng-repeat="button in buttons">
          <div style="position:absolute;left:{{button.left}}px;top:{{button.top}}px"><button id="{{button.buttonID}}" ng-click="buttonClick($event,'button.buttonID');" >{{button.label}}</button></div>
        </div>
+       <div>
+         <div style="position:absolute;left:200px;top:200px"><button ng-click="transactionVoid($event);">Void</button></div>
+       </div>
        <div style="position:fixed;height:50px;bottom:0px;left:0px;right:0px;margin-bottom:0px"} ng-show="errorMessage != ''">
           <div class="col-sm-12">
            <h3 class="text-danger">{{errorMessage}}</h3>
          </div>
+       </div>
+       <div>
+         <div style="position:absolute;left:50px;top:200px"><button ng-click="transactionVoid($event);">Sale</button></div>
        </div>
      </div>
 </div>

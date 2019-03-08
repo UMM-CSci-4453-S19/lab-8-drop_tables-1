@@ -9,6 +9,7 @@ function ButtonCtrl($scope,buttonApi){
    $scope.isLoading=isLoading;
    $scope.refreshButtons=refreshButtons;
    $scope.buttonClick=buttonClick;
+   $scope.transactionVoid=transactionVoid;
 
    var loading = false;
 
@@ -34,6 +35,19 @@ function ButtonCtrl($scope,buttonApi){
         .success(function(){})
         .error(function(){$scope.errorMessage="Unable click";});
   }
+
+  function transactionVoid($event){
+        $scope.errorMessage='';
+        buttonApi.transactionVoid()
+          .success(function(data){
+             loading=false;
+             console.log("success")
+          })
+          .error(function () {
+              $scope.errorMessage="Failed to truncate";
+              loading=false;
+          });
+  }
   refreshButtons();  //make sure the buttons are loaded
 
 }
@@ -48,7 +62,10 @@ function buttonApi($http,apiUrl){
       var url = apiUrl+'/click?id='+id;
 //      console.log("Attempting with "+url);
       return $http.get(url); // Easy enough to do this way
+    },
+    transactionVoid: function(){
+      var url = apiUrl + '/void';
+      return $http.get(url);
     }
  };
 }
-
