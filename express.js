@@ -51,5 +51,35 @@ app.get("/void",function(req,res){
      res.send(err); // Let the upstream guy know how it went
   })
 });
+app.get("/list",function(req,res){
+  var sql = 'SELECT * FROM transactions';
+  connection.query(sql,(function(res){return function(err,rows,fields){
+     var dbfarr = new Array(rows.length);
+     rows.forEach(function (item, index) {
+   	dbfarr[index] = {"buttonID":item.button_id,
+   		"left":item.leftPosition,
+   		"top":item.topPosition,
+   		"width":item.wide,
+   		"label":item.label,
+   		"invID":item.invID};
+     })
+     if(err){console.log("We have an error:");
+             console.log(err);}
+     res.send(dbfarr);
+  }})(res));
+});
+app.get("/total",function(req,res){
+  var sql = 'select sum(price) as total from transactions;';
+  console.log("Attempting sql ->"+sql+"<-");
+
+  connection.query(sql,(function(res){return function(err,rows,fields){
+     var totals = rows[0].total.toString();
+     console.log(rows);
+     console.log(rows[0]);
+     if(err){console.log("We have an error:");
+             console.log(err);}
+     res.send(totals);
+  }})(res));
+});
 
 app.listen(port);
