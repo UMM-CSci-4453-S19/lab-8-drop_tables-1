@@ -51,5 +51,21 @@ app.get("/void",function(req,res){
      res.send(err); // Let the upstream guy know how it went
   })
 });
+app.get("/users",function(req,res){
+  var sql = 'SELECT * FROM users';
+  connection.query(sql,(function(res){return function(err,rows,fields){
+     var dbfarr = new Array(rows.length);
+     rows.forEach(function (item, index, array) {
+    dbfarr[index] = {"userID":item.user.id,
+      "left":index*50+200,
+      "top":50,
+      "width":40,
+      "label":item.name};
+     })
+     if(err){console.log("We have an error:");
+             console.log(err);}
+     res.send(dbfarr);
+  }})(res));
+});
 
 app.listen(port);

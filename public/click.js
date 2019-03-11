@@ -10,6 +10,7 @@ function ButtonCtrl($scope,buttonApi){
    $scope.refreshButtons=refreshButtons;
    $scope.buttonClick=buttonClick;
    $scope.transactionVoid=transactionVoid;
+   $score.userButtons=userButtons;
 
    var loading = false;
 
@@ -29,6 +30,21 @@ function ButtonCtrl($scope,buttonApi){
           loading=false;
       });
  }
+
+ function userButtons(){
+    loading=true;
+    $scope.errorMessage='';
+    buttonApi.getUserButtons()
+      .success(function(data){
+         $scope.buttons=data;
+         loading=false;
+      })
+      .error(function () {
+          $scope.errorMessage="Unable to load User Buttons:  Database request failed";
+          loading=false;
+      });
+ }
+
   function buttonClick($event){
      $scope.errorMessage='';
      buttonApi.clickButton($event.target.id)
@@ -48,6 +64,7 @@ function ButtonCtrl($scope,buttonApi){
               loading=false;
           });
   }
+  userButtons();
   refreshButtons();  //make sure the buttons are loaded
 
 }
@@ -56,6 +73,10 @@ function buttonApi($http,apiUrl){
   return{
     getButtons: function(){
       var url = apiUrl + '/buttons';
+      return $http.get(url);
+    },
+    getUserButtons: function(){
+      var url = apiUrl + '/users';
       return $http.get(url);
     },
     clickButton: function(id){
