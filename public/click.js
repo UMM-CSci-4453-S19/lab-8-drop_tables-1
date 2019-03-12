@@ -5,12 +5,14 @@ angular.module('buttons',[])
 
 function ButtonCtrl($scope,buttonApi){
    $scope.buttons=[]; //Initially all was still
+   $scope.total=0;
    $scope.errorMessage='';
    $scope.isLoading=isLoading;
    $scope.refreshButtons=refreshButtons;
    $scope.buttonClick=buttonClick;
    $scope.transactionVoid=transactionVoid;
    $score.userButtons=userButtons;
+   $scope.returnTotal=returnTotal;
 
    var loading = false;
 
@@ -50,6 +52,7 @@ function ButtonCtrl($scope,buttonApi){
      buttonApi.clickButton($event.target.id)
         .success(function(){})
         .error(function(){$scope.errorMessage="Unable click";});
+     returnTotal();
   }
 
   function transactionVoid($event){
@@ -63,7 +66,38 @@ function ButtonCtrl($scope,buttonApi){
               $scope.errorMessage="Failed to truncate";
               loading=false;
           });
+          $scope.total = 0;
   }
+
+  function displayTransaction(){
+    loading=true;
+    $scope.errorMessage='';
+    buttonApi.getButtons()
+      .success(function(data){
+         $scope.buttons=data;
+         loading=false;
+      })
+      .error(function () {
+          $scope.errorMessage="Unable to load Buttons:  Database request failed";
+          loading=false;
+      });
+  }
+
+  function returnTotal(){
+    loading=true;
+    $scope.errorMessage='';
+    buttonApi.getTotal()
+      .success(function(data){
+         $scope.total=data;
+         loading=false;
+      })
+      .error(function () {
+          $scope.errorMessage="Unable to load Buttons:  Database request failed";
+          loading=false;
+      });
+  }
+  returnTotal();
+  displayTransaction();
   userButtons();
   refreshButtons();  //make sure the buttons are loaded
 
@@ -86,6 +120,14 @@ function buttonApi($http,apiUrl){
     },
     transactionVoid: function(){
       var url = apiUrl + '/void';
+      return $http.get(url);
+    },
+    showList: function(){
+      var url = apiUrl + '/list';
+      return $http.get(url);
+    },
+    getTotal: function(){
+      var url = apiUrl + '/total';
       return $http.get(url);
     }
  };
