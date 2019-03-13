@@ -30,19 +30,26 @@ app.get("/buttons",function(req,res){
   }})(res));
 });
 
+// Gets the button information form our transaction table and puts it in a table
 app.get("/transaction",function(req,res){
+  // Setting up and making the SQL query
   var sql = 'SELECT * FROM transactions';
   connection.query(sql,(function(res){return function(err,rows,fields){
      var dbfarr = new Array(rows.length);
+     // Loop over the response rows and put the information into an array of maps
+     // We can then use this to create our buttons
      rows.forEach(function (item, index) {
-    dbfarr[index] = {
-      "buttonID":item.button_id,
+       dbfarr[index] =
+       "buttonID":item.button_id,
       "item_id":item.item_id,
       "label":item.label,
-      "price" :item.price};
-     })
-     if(err){console.log("We have an error:");
-             console.log(err);}
+      "price" :item.price
+    });
+     }
+     if(err){
+       console.log("We have an error:");
+       console.log(err);
+     }
      res.send(dbfarr);
   }})(res));
 });
