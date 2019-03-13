@@ -24,6 +24,11 @@
             <td>{{transaction.price}}</td>
             <td><button id="{{transaction.item_id}}" ng-click="deleteButtonClick($event,'transaction.item_id');">Delete</button></td>
          </tr>
+         <tr>
+           <td>
+             <b>Total: ${{total}}</b
+           </td>
+         </tr>
        </table>
        <div>
          <div style="position:absolute;left:200px;top:200px"><button ng-click="transactionVoid($event);">Void</button></div>
@@ -36,7 +41,6 @@
        <div>
          <div style="position:absolute;left:50px;top:200px"><button ng-click="transactionVoid($event);">Sale</button></div>
        </div>
-       <h2 style="position:absolute;left:20px;top:400px">Total: ${{total}}</h2>
      </div>
 </div>
 </body>

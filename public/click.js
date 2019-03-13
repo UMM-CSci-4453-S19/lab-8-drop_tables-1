@@ -127,7 +127,7 @@ function buttonApi($http,apiUrl){
       return $http.get(url);
     },
     deleteTransaction: function(id){
-      var url = apiUrl + '/deleteclick';
+      var url = apiUrl + '/deleteclick?id=' +id;
       return $http.get(url);
     }
  };
