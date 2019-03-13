@@ -14,6 +14,9 @@
        <div ng-repeat="button in buttons">
          <div style="position:absolute;left:{{button.left}}px;top:{{button.top}}px"><button id="{{button.buttonID}}" ng-click="buttonClick($event,'button.buttonID');" >{{button.label}}</button></div>
        </div>
+       <div ng-repeat="button in buttons">
+         <div style="position:absolute;left:{{users.left}}px;top:{{users.top}}px"><button id="{{users.userID}}" ng-click="userButtonClick($event,'users.label');" >{{users.label}}</button></div>
+       </div>
        <div>
          <div style="position:absolute;left:200px;top:200px"><button ng-click="transactionVoid($event);">Void</button></div>
        </div>

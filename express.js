@@ -98,4 +98,16 @@ app.get("/total",function(req,res){
   }})(res));
 });
 
+app.get("/current_user",function(req,res){
+  var sql = 'select name as currentuser from current_users';
+  console.log("Attempting sql ->"+sql+"<-");
+
+  connection.query(sql, function(err,rows,fields){
+    var totals = rows[0].currentuser.toString;
+     if(err){console.log("We have an truncation error:");
+             console.log(err);}
+     res.send(err); // Let the upstream guy know how it went
+  })
+});
+
 app.listen(port);

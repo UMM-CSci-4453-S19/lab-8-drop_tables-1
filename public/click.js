@@ -5,20 +5,38 @@ angular.module('buttons',[])
 
 function ButtonCtrl($scope,buttonApi){
    $scope.buttons=[]; //Initially all was still
+   $scope.users=[];
    $scope.total=0;
    $scope.errorMessage='';
    $scope.isLoading=isLoading;
    $scope.refreshButtons=refreshButtons;
    $scope.buttonClick=buttonClick;
+   $scope.userButtonClick=userButtonClick;
    $scope.transactionVoid=transactionVoid;
    $score.userButtons=userButtons;
    $scope.returnTotal=returnTotal;
+   $scope.currentUser="Ethan";
 
    var loading = false;
 
    function isLoading(){
     return loading;
    }
+
+   function findCurrentUser(){
+    loading=true;
+    $scope.errorMessage='';
+    buttonApi.getCurrentUser()
+      .success(function(data){
+         $scope.currentUser=data;
+         loading=false;
+      })
+      .error(function () {
+          $scope.errorMessage="Unable to load Buttons:  Database request failed";
+          loading=false;
+      });
+ }
+
   function refreshButtons(){
     loading=true;
     $scope.errorMessage='';
@@ -48,6 +66,14 @@ function ButtonCtrl($scope,buttonApi){
  }
 
   function buttonClick($event){
+     $scope.errorMessage='';
+     buttonApi.clickButton($event.target.id)
+        .success(function(){})
+        .error(function(){$scope.errorMessage="Unable click";});
+     returnTotal();
+  }
+
+  function userButtonClick($event){
      $scope.errorMessage='';
      buttonApi.clickButton($event.target.id)
         .success(function(){})
@@ -96,8 +122,9 @@ function ButtonCtrl($scope,buttonApi){
           loading=false;
       });
   }
+  findCurrentUser();
   returnTotal();
-  displayTransaction();
+  //displayTransaction();
   userButtons();
   refreshButtons();  //make sure the buttons are loaded
 
@@ -128,6 +155,10 @@ function buttonApi($http,apiUrl){
     },
     getTotal: function(){
       var url = apiUrl + '/total';
+      return $http.get(url);
+    },
+    getCurrentUser: function(){
+      var url = apiUrl + '/current_user';
       return $http.get(url);
     }
  };
