@@ -114,10 +114,6 @@ function buttonApi($http,apiUrl){
       var url = apiUrl + '/void';
       return $http.get(url);
     },
-    showList: function(){
-      var url = apiUrl + '/list';
-      return $http.get(url);
-    },
     getTotal: function(){
       var url = apiUrl + '/total';
       return $http.get(url);
