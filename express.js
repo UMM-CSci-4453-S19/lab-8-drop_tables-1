@@ -29,6 +29,22 @@ app.get("/buttons",function(req,res){
      res.send(dbfarr);
   }})(res));
 });
+
+app.get("/transaction",function(req,res){
+  var sql = 'SELECT * FROM transactions';
+  connection.query(sql,(function(res){return function(err,rows,fields){
+     var dbfarr = new Array(rows.length);
+     rows.forEach(function (item, index) {
+    dbfarr[index] = {
+      "label":item.label,
+      "price" :item.price};
+     })
+     if(err){console.log("We have an error:");
+             console.log(err);}
+     res.send(dbfarr);
+  }})(res));
+});
+
 app.get("/click",function(req,res){
   var id = req.param('id');
   var sql = 'insert into transactions select * from till_buttons where button_id = ?;'
