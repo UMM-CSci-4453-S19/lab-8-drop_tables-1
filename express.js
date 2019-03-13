@@ -39,13 +39,13 @@ app.get("/transaction",function(req,res){
      // Loop over the response rows and put the information into an array of maps
      // We can then use this to create our buttons
      rows.forEach(function (item, index) {
-       dbfarr[index] =
-       "buttonID":item.button_id,
-      "item_id":item.item_id,
-      "label":item.label,
-      "price" :item.price
-    });
-     }
+       dbfarr[index] = {
+        "buttonID":item.button_id,
+        "item_id":item.item_id,
+        "label":item.label,
+        "price" :item.price
+    }
+  });
      if(err){
        console.log("We have an error:");
        console.log(err);
