@@ -13,6 +13,7 @@ function ButtonCtrl($scope,buttonApi){
    $scope.buttonClick=buttonClick;
    $scope.transactionVoid=transactionVoid;
    $scope.returnTotal=returnTotal;
+   $scope.deleteButtonClick=deleteButtonClick;
 
    var loading = false;
 
@@ -35,6 +36,15 @@ function ButtonCtrl($scope,buttonApi){
   function buttonClick($event){
      $scope.errorMessage='';
      buttonApi.clickButton($event.target.id)
+        .success(function(){})
+        .error(function(){$scope.errorMessage="Unable click";});
+     returnTotal();
+     refreshTransaction();
+  }
+
+  function deleteButtonClick($event){
+     $scope.errorMessage='';
+     buttonApi.deleteTransaction($event.target.id)
         .success(function(){})
         .error(function(){$scope.errorMessage="Unable click";});
      returnTotal();
@@ -67,20 +77,7 @@ function ButtonCtrl($scope,buttonApi){
               loading=false;
           });
           $scope.total = 0;
-  }
-
-  function displayTransaction(){
-    loading=true;
-    $scope.errorMessage='';
-    buttonApi.getButtons()
-      .success(function(data){
-         $scope.buttons=data;
-         loading=false;
-      })
-      .error(function () {
-          $scope.errorMessage="Unable to load Buttons:  Database request failed";
-          loading=false;
-      });
+          refreshTransaction();
   }
 
   function returnTotal(){
@@ -98,7 +95,6 @@ function ButtonCtrl($scope,buttonApi){
   }
   returnTotal();
   refreshTransaction();
-  //displayTransaction();
   refreshButtons();  //make sure the buttons are loaded
 
 }
@@ -128,6 +124,10 @@ function buttonApi($http,apiUrl){
     },
     getTransaction: function(){
       var url = apiUrl + '/transaction';
+      return $http.get(url);
+    },
+    deleteTransaction: function(id){
+      var url = apiUrl + '/deleteclick';
       return $http.get(url);
     }
  };

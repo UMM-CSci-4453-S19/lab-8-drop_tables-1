@@ -22,6 +22,7 @@
          <tr ng-repeat="transaction in transactionState">
             <td>{{transaction.label}}</td>
             <td>{{transaction.price}}</td>
+            <td><button id="{{transaction.item_id}}" ng-click="deleteButtonClick($event,'transaction.item_id');">Delete</button></td>
          </tr>
        </table>
        <div>

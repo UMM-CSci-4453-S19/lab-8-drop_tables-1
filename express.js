@@ -36,6 +36,8 @@ app.get("/transaction",function(req,res){
      var dbfarr = new Array(rows.length);
      rows.forEach(function (item, index) {
     dbfarr[index] = {
+      "buttonID":item.button_id,
+      "item_id":item.item_id,
       "label":item.label,
       "price" :item.price};
      })
@@ -47,11 +49,24 @@ app.get("/transaction",function(req,res){
 
 app.get("/click",function(req,res){
   var id = req.param('id');
-  var sql = 'insert into transactions select * from till_buttons where button_id = ?;'
+  var sql = 'insert into transactions (button_id, label, invID, price) select button_id, label, invID, price from till_buttons where button_id = ?;'
   console.log("Attempting sql ->"+sql+"<-");
 
   connection.query(sql, id,(function(res){return function(err,rows,fields){
      if(err){console.log("We have an insertion error:");
+             console.log(err);}
+     res.send(err); // Let the upstream guy know how it went
+  }})(res));
+});
+
+app.get("/deleteclick",function(req,res){
+  var id = req.param('id');
+  console.log(id)
+  var sql = 'delete from transactions where item_id = ?;'
+  console.log("Attempting sql ->"+sql+"<-");
+
+  connection.query(sql, id,(function(res){return function(err,rows,fields){
+     if(err){console.log("We have an deletion error:");
              console.log(err);}
      res.send(err); // Let the upstream guy know how it went
   }})(res));
@@ -89,7 +104,11 @@ app.get("/total",function(req,res){
   console.log("Attempting sql ->"+sql+"<-");
 
   connection.query(sql,(function(res){return function(err,rows,fields){
-     var totals = rows[0].total.toString();
+     var total = rows[0].total;
+     var totals = '0';
+     if (total != null) {
+       totals = total.toString();
+     }
      console.log(rows);
      console.log(rows[0]);
      if(err){console.log("We have an error:");
