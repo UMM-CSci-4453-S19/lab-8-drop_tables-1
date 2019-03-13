@@ -5,6 +5,7 @@ angular.module('buttons',[])
 
 function ButtonCtrl($scope,buttonApi){
    $scope.buttons=[]; //Initially all was still
+   $scope.transactionState=[];
    $scope.total=0;
    $scope.errorMessage='';
    $scope.isLoading=isLoading;
@@ -12,6 +13,7 @@ function ButtonCtrl($scope,buttonApi){
    $scope.buttonClick=buttonClick;
    $scope.transactionVoid=transactionVoid;
    $scope.returnTotal=returnTotal;
+   $scope.deleteButtonClick=deleteButtonClick;
 
    var loading = false;
 
@@ -37,7 +39,31 @@ function ButtonCtrl($scope,buttonApi){
         .success(function(){})
         .error(function(){$scope.errorMessage="Unable click";});
      returnTotal();
+     refreshTransaction();
   }
+
+  function deleteButtonClick($event){
+     $scope.errorMessage='';
+     buttonApi.deleteTransaction($event.target.id)
+        .success(function(){})
+        .error(function(){$scope.errorMessage="Unable click";});
+     returnTotal();
+     refreshTransaction();
+  }
+
+  function refreshTransaction(){
+    loading=true;
+    $scope.errorMessage='';
+    buttonApi.getTransaction()
+      .success(function(data){
+         $scope.transactionState=data;
+         loading=false;
+      })
+      .error(function () {
+          $scope.errorMessage="Unable to load Buttons:  Database request failed";
+          loading=false;
+      });
+ }
 
   function transactionVoid($event){
         $scope.errorMessage='';
@@ -51,20 +77,7 @@ function ButtonCtrl($scope,buttonApi){
               loading=false;
           });
           $scope.total = 0;
-  }
-
-  function displayTransaction(){
-    loading=true;
-    $scope.errorMessage='';
-    buttonApi.getButtons()
-      .success(function(data){
-         $scope.buttons=data;
-         loading=false;
-      })
-      .error(function () {
-          $scope.errorMessage="Unable to load Buttons:  Database request failed";
-          loading=false;
-      });
+          refreshTransaction();
   }
 
   function returnTotal(){
@@ -81,7 +94,7 @@ function ButtonCtrl($scope,buttonApi){
       });
   }
   returnTotal();
-  displayTransaction();
+  refreshTransaction();
   refreshButtons();  //make sure the buttons are loaded
 
 }
@@ -107,6 +120,14 @@ function buttonApi($http,apiUrl){
     },
     getTotal: function(){
       var url = apiUrl + '/total';
+      return $http.get(url);
+    },
+    getTransaction: function(){
+      var url = apiUrl + '/transaction';
+      return $http.get(url);
+    },
+    deleteTransaction: function(id){
+      var url = apiUrl + '/deleteclick?id=' +id;
       return $http.get(url);
     }
  };
